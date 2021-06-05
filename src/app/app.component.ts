@@ -12,24 +12,25 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 })
 export class AppComponent implements OnInit {
   title = 'angular-interview';
-  loading=false;
+  loading = false;
   locationData: any;
   Data: any;
   Object = Object;
   moment = moment;
   selectedValue = 'country';
   countryName = 'United Kingdom';
-  Designation: any={};
+  Designation: any = {};
   States: any;
   FilterData: any;
   GroupList: any;
   CountryData: any;
   DesignationList: any;
-  abcList:string[]=[];
+  abcList: string[] = [];
   NewArray: Object[] = [];
-  FinalList:any;
+  FinalList: any;
   listdata = {};
-  stateName="";
+  stateName = '';
+
   range = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
@@ -50,8 +51,8 @@ export class AppComponent implements OnInit {
   }
 
   availableRoles(Value: any) {
-    this.loading=true;
-    this.FinalList=[];
+    this.loading = true;
+    this.FinalList = [];
     this.jsonService.getLocationDist().subscribe((data) => {
       this.locationData = data;
       this.Data = data;
@@ -59,6 +60,8 @@ export class AppComponent implements OnInit {
       this.Data = this.Data[Value];
       this.States = this.groupBy(this.Data, 'state');
       this.Designation = this.groupBy(this.Data, 'designation');
+
+      // Type 1 Data Format
 
       // for (var state in this.States) {
       //   for (var designation in this.Designation) {
@@ -77,6 +80,7 @@ export class AppComponent implements OnInit {
       // this.CountryData = this.FinalList;
       // var dict = { state: [{designation: designation, count: 0}]};
 
+      // Type 2 Data Format
 
       // for (var stateVariable in this.States) {
       //   for (var designation in this.Designation) {
@@ -98,6 +102,14 @@ export class AppComponent implements OnInit {
       // this.CountryData = this.FinalList;
       // console.log(this.CountryData)
 
+      // Type 3 Data Format
+
+      //  this.CountryData=_.forEach(this.States, (value, key)=> {
+      //   this.States[key] = _.groupBy(this.States[key], function(item) {
+      //     return item.state;
+      //   });
+      // });
+
       for (var stateVariable in this.States) {
         this.abcList.push(stateVariable.toString());
         for (var designation in this.Designation) {
@@ -113,21 +125,15 @@ export class AppComponent implements OnInit {
           this.abcList.push(list.toString());
         }
         this.FinalList.push(this.abcList);
-        this.abcList=[];
+        this.abcList = [];
       }
       this.CountryData = this.FinalList;
-
-      //  this.CountryData=_.forEach(this.States, (value, key)=> {
-      //   this.States[key] = _.groupBy(this.States[key], function(item) {
-      //     return item.state;
-      //   });
-      // });
-      this.loading=false;
+      this.loading = false;
     });
   }
 
   filterTask(ColoumnType: any, Value: any) {
-    this.loading=true;
+    this.loading = true;
     this.jsonService.getSampleGroupUsers().subscribe((data) => {
       this.FilterData = data;
       if (ColoumnType === 'group') {
@@ -150,9 +156,7 @@ export class AppComponent implements OnInit {
         }
         this.FilterData = this.NewArray;
       }
-      this.loading=false;
+      this.loading = false;
     });
   }
-
-
 }
