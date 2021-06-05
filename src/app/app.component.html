@@ -1,18 +1,138 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<mat-tab-group mat-align-tabs="start">
+  <!-- Task 1 -->
+  <mat-tab label="Task 1">
+    <div class="interview__task">
+      <h2 class="interview__task--heading">Available Roles By Country</h2>
+      <mat-form-field class="interview__task--form" appearance="fill">
+        <mat-label class="interview__task--form-label"
+          >Select Country</mat-label
+        >
+        <mat-select
+          class="interview__task--form-selector"
+          #choosedcountry
+          (selectionChange)="availableRoles(choosedcountry.value)"
+        >
+          <mat-option value="United States">United States</mat-option>
+          <mat-option value="United Kingdom">United Kingdom</mat-option>
+          <mat-option value="India">India</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div *ngIf="CountryData!==undefined" class="interview__task--table">
+        <table>
+          <thead>
+            <tr>
+              <th>States &darr;/Roles &rarr;</th>
+              <th *ngFor="let desgn of Object.keys(Designation);">
+                {{ desgn }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+                <tr *ngFor="let state of CountryData;let i=index;">
+                  <td *ngFor="let stateData of state;">{{stateData}}</td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
 
-<router-outlet></router-outlet>
 
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content above * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * End of Placeholder * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+  <!-- Task 2 -->
+  <mat-tab label="Task 2">
+    <div class="interview__task">
+      <h2 class="interview__task--heading">Filter</h2>
+      <div class="interview__task--cont">
+        <mat-form-field class="interview__task--form" appearance="fill">
+          <mat-label class="interview__task--form-label"
+            >Filter By Group</mat-label
+          >
+          <mat-select
+            class="interview__task--form-selector"
+            #choosedvalue
+            (selectionChange)="filterTask('group', choosedvalue.value)"
+          >
+            <mat-option
+              *ngFor="let list of GroupList | keyvalue"
+              [value]="list.key"
+              >{{ list.key }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="interview__task--form" appearance="fill">
+          <mat-label class="interview__task--form-label"
+            >Filter By Designation</mat-label
+          >
+          <mat-select
+            class="interview__task--form-selector"
+            #choosedvaluedesign
+            (selectionChange)="
+              filterTask('designation', choosedvaluedesign.value)
+            "
+          >
+            <mat-option
+              *ngFor="let list of DesignationList | keyvalue"
+              [value]="list.key"
+              >{{ list.key }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="interview__task--form" appearance="fill">
+          <mat-label class="interview__task--form-label"
+            >Filter By Registration Date</mat-label
+          >
+          <mat-date-range-input
+            class="interview__task--form-selector"
+            [formGroup]="range"
+            [rangePicker]="picker"
+          >
+            <input
+              matStartDate
+              formControlName="start"
+              placeholder="Start date"
+            />
+            <input
+              matEndDate
+              formControlName="end"
+              placeholder="End date"
+              (dateChange)="filterTask('registrationDate', range.value)"
+            />
+          </mat-date-range-input>
+
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <div class="interview__task--table">
+        <table>
+          <tr>
+            <th>Sr No</th>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Designation</th>
+            <th>Registration Date</th>
+            <th>Group</th>
+          </tr>
+          <ng-container *ngFor="let keys of FilterData; let i = index">
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td *ngFor="let key of Object.keys(keys)">
+                {{
+                  key === "registrationDate"
+                    ? moment.unix(keys[key]).format("Do MMMM, YYYY")
+                    : keys[key]
+                }}
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+<div *ngIf="loading" class="loading__spinner--container">
+  <app-loading-spinner></app-loading-spinner>
+</div>
